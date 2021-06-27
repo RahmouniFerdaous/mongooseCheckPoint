@@ -20,6 +20,14 @@ route.post("/create-data/create", (req, res) => {
     .then((doc) => res.send(doc))
     .catch((err) => res.status(401).json(err.message));
 });
+
+//Use model.find() to display all users
+route.get("/get-data/all", (req, res) => {
+  User.find()
+    .then((doc) => res.send(doc))
+    .catch((err) => res.status(401).json(err.message));
+});
+
 //Use model.find() to Search Your Database
 route.get("/get-data/name", (req, res) => {
   const givenName = req.body.name;
@@ -40,17 +48,16 @@ route.get("/get-data/favoriteFoods", (req, res) => {
     .catch((err) => res.status(401).json(err.message));
 });
 //Use model.findById() to Search Your Database By _id
-route.get("/get-data/id", (req, res) => {
-  const givenId = req.body._id;
-  User.findById({ _id: givenId }) //find by name
+route.get("/get-data/:id", (req, res) => {
+  User.findById(req.params.id) //find by Id
     .then((doc) => res.send(doc))
     .catch((err) => res.status(401).json(err.message));
 });
 //Chain Search Query Helpers to Narrow Search Results
 route.get("/get-data/favoriteFoods/burritos", (req, res) => {
-  const givenFavoriteFood = "burritos"; 
+  const givenFavoriteFood = "burritos";
   User.find({
-    favoriteFoods: req.body.favoriteFoods.find( 
+    favoriteFoods: req.body.favoriteFoods.find(
       (elm) => elm === givenFavoriteFood
     ),
   }) // Pick one user and send it by req
@@ -89,9 +96,8 @@ route.put("/update-data/age", (req, res) => {
 });
 
 //Delete One Document Using model.findByIdAndRemove
-route.delete("/delete-data/id", (req, res) => {
-  const personId = req.body._id;
-  User.findOneAndDelete({ _Id: personId })
+route.delete("/delete-data/:id", (req, res) => {
+  User.findOneAndDelete(req.params.id)
     .then(() => res.send("user deleted"))
     .catch((err) => res.status(401).json(err.message));
 });
