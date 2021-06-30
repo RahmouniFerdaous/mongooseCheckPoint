@@ -29,21 +29,16 @@ route.get("/get-data/all", (req, res) => {
 });
 
 //Use model.find() to Search Your Database
-route.get("/get-data/name", (req, res) => {
-  const givenName = req.body.name;
+route.get("/get-data/:name", (req, res) => {
+  const givenName = req.params.name;
   User.find({ name: givenName }) // find by name
     .then((doc) => res.send(doc))
     .catch((err) => res.status(401).json(err.message));
 });
 //Use model.findOne() to Return a Single Matching Document from Your Database
-route.get("/get-data/favoriteFoods", (req, res) => {
-  const givenFavoriteFood = "pizza"; // find by favoritesFood
-  // Pick one user from the db and send it by req
-  User.findOne({
-    favoriteFoods: req.body.favoriteFoods.find(
-      (elm) => elm === givenFavoriteFood
-    ),
-  })
+route.get("/get-data/favoriteFoods/:food", (req, res) => {
+  const givenFavoriteFood = req.params.food; // find by favoritesFood
+  User.findOne({favoriteFoods: givenFavoriteFood})
     .then((doc) => res.send(doc))
     .catch((err) => res.status(401).json(err.message));
 });
@@ -56,11 +51,7 @@ route.get("/get-data/:id", (req, res) => {
 //Chain Search Query Helpers to Narrow Search Results
 route.get("/get-data/favoriteFoods/burritos", (req, res) => {
   const givenFavoriteFood = "burritos";
-  User.find({
-    favoriteFoods: req.body.favoriteFoods.find(
-      (elm) => elm === givenFavoriteFood
-    ),
-  }) // Pick one user and send it by req
+  User.find({favoriteFoods:givenFavoriteFood}) // find by favoriteFood
     .limit(2) // limit to 2 items
     .sort({ name: 1 }) // sort ascending by name
     .select("-age") // hide their age
@@ -103,10 +94,10 @@ route.delete("/delete-data/:id", (req, res) => {
 });
 
 //Delete Many Documents with model.remove()
-route.delete("/delete-data/name", (req, res) => {
-  const personName = req.body.name;
-  User.remove({ name: personName })
+route.delete("/delete-data/:name", (req, res) => {
+  User.remove(req.params.name)
     .then(() => res.send("user deleted"))
     .catch((err) => res.status(401).json(err.message));
 });
+//exports route to server.js
 module.exports = route;
