@@ -77,7 +77,7 @@ route.put("/update-data/age", (req, res) => {
   const givenName = req.body.name;
   const givenAge = req.body.age;
   //find by name and update age and conserve the others infos
-  User.findOneAndUpdate(
+  User.findByIdAndUpdate(
     { name: givenName },
     { $set: { age: givenAge } },
     { new: true }
@@ -88,14 +88,14 @@ route.put("/update-data/age", (req, res) => {
 
 //Delete One Document Using model.findByIdAndRemove
 route.delete("/delete-data/:id", (req, res) => {
-  User.findOneAndDelete(req.params.id)
+  User.findByIdAndDelete(req.params.id)
     .then(() => res.send("user deleted"))
     .catch((err) => res.status(401).json(err.message));
 });
 
 //Delete Many Documents with model.remove()
-route.delete("/delete-data/:name", (req, res) => {
-  User.remove(req.params.name)
+route.delete("/delete-data", (req, res) => {
+  User.remove({name:"ibrahim"})
     .then(() => res.send("user deleted"))
     .catch((err) => res.status(401).json(err.message));
 });
